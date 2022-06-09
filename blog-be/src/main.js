@@ -4,6 +4,7 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 
 import api from './api';
+import createFakeData from './createFakeData';
 const { default: mongoose } = require('mongoose');
 
 // 비구조화 할당을 통해 process.env 내부 값에 대한 레퍼런스 만들기
