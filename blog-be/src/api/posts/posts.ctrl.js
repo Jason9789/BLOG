@@ -4,13 +4,28 @@ import Joi from 'joi';
 
 const { ObjectId } = mongoose.Types;
 
-export const checkObjectId = (ctx, next) => {
+export const getPostById = async (ctx, next) => {
   const { id } = ctx.params;
+
   if (!ObjectId.isValid(id)) {
     ctx.status = 400;
     return;
   }
-  return next();
+
+  try {
+    const post = await Post.findById(id);
+
+    // 포스트가 존재하지 않을 때
+    if (!post) {
+      ctx.status = 404;
+      return;
+    }
+
+    ctx.state.post = post;
+    return next();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
 };
 
 // POST /api/posts
@@ -35,6 +50,7 @@ export const write = async (ctx) => {
     title,
     body,
     tags,
+    user: ctx.state.user,
   });
   try {
     await post.save();
@@ -54,6 +70,14 @@ export const list = async (ctx) => {
     ctx.status = 400;
     return;
   }
+
+  const { tag, username } = ctx.query;
+
+  // tag, username 값이 유효하면 객체 안에 넣고, 그렇지 않으면 넣지 않음.
+  const query = {
+    ...(username ? { 'user.username': username } : {}),
+    ...(tag ? { tags: tag } : {}),
+  };
 
   try {
     // find() 함수를 호출한 후에는 exec()를 붙여야 서버에 쿼리를 요청한다.
@@ -78,17 +102,7 @@ export const list = async (ctx) => {
 
 // GET /api/posts/:id
 export const read = async (ctx) => {
-  const { id } = ctx.params;
-  try {
-    const post = await Post.findById(id).exec();
-    if (!post) {
-      ctx.status = 404;
-      return;
-    }
-    ctx.body = post;
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+  ctx.body = ctx.state.post;
 };
 
 // DELETE /api/posts/:id
@@ -131,4 +145,14 @@ export const update = async (ctx) => {
   } catch (e) {
     ctx.throw(500, e);
   }
+};
+
+export const checkOwnPost = (ctx, next) => {
+  const { user, post } = ctx.state;
+  if (post.user._id.toString() !== user._id) {
+    ctx.status = 403;
+    return;
+  }
+
+  return next();
 };
