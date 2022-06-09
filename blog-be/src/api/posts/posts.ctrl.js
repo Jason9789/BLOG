@@ -1,5 +1,3 @@
-const { post } = require('.');
-
 // id의 초깃값
 let postId = 1;
 
