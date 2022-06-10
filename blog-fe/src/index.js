@@ -6,11 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from '../node_modules/react-router-dom/index';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import rootReducer from './modules';
+import createSagaMiddleware from 'redux-saga';
+import rootReducer, { rootSaga } from './modules';
 
-const store = createStore(rootReducer, composeWithDevTools());
+const sagaMiddleware = createSagaMiddleware();
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(sagaMiddleware)),
+);
+
+sagaMiddleware.run(rootSaga);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
