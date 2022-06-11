@@ -28,7 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://bejewelled-pegasus-39e4db.netlify.app/",
+  "homepage": "https://specfolio.netlify.app",
   "eslintConfig": {
     "extends": [
       "react-app",
