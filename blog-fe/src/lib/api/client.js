@@ -4,7 +4,9 @@ import axios from 'axios';
  * api 서버 client 연결
  */
 
-const client = axios.create();
+const client = axios.create({
+  baseURL: 'https://specfolio.herokuapp.com',
+});
 
 /**
  * 글로벌 설정 예시 :
