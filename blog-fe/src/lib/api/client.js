@@ -4,9 +4,11 @@ import axios from 'axios';
  * api 서버 client 연결
  */
 
-const client = axios.create({
-  baseURL: 'https://specfolio.herokuapp.com',
-});
+// const client = axios.create({
+//   baseURL: 'https://specfolio.herokuapp.com',
+// });
+
+const client = axios.create();
 
 /**
  * 글로벌 설정 예시 :
